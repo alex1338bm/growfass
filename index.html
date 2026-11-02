@@ -3,456 +3,533 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Die Grow-Fass App - Das Liebig-Minimumgesetz</title>
+    <title>Das Liebig-Cannabis-Fass | Die ungeschminkte Wahrheit über deinen Ertrag</title>
     <style>
         :root {
-            --bg-color: #0f1319;
-            --card-bg: #161d24;
+            --bg-color: #0b0f12;
+            --card-bg: #131a1f;
             --text-color: #cbd5e1;
+            --text-light: #ffffff;
             --primary: #4ade80;
+            --primary-dark: #22c55e;
             --danger: #ef4444;
             --warning: #f59e0b;
             --info: #3b82f6;
-            --purple: #a855f7;
-            --wood: #7c2d12;
-            --wood-light: #9a3412;
-            --gold: #f59e0b;
+            --accent: #a855f7;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         
-        .app-container { display: flex; flex-direction: row; gap: 30px; max-width: 1300px; width: 100%; background: var(--card-bg); padding: 35px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #232f3e; }
+        .master-container { max-width: 1200px; width: 100%; background: var(--card-bg); border-radius: 20px; border: 1px solid #232e36; box-shadow: 0 20px 50px rgba(0,0,0,0.6); overflow: hidden; padding: 40px; }
         
-        /* Linke Seite: Fragebogen & Side-Facts */
-        .input-side { flex: 1.3; display: flex; flex-direction: column; justify-content: space-between; }
-        h1 { font-size: 26px; margin-bottom: 8px; color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .intro-text { font-size: 14px; color: #94a3b8; margin-bottom: 20px; line-height: 1.5; }
+        /* LANDING PAGE SCREEN */
+        .screen { display: none; animation: fadeIn 0.4s ease forwards; }
+        .screen.active { display: block; }
         
-        .main-workspace { display: flex; gap: 20px; align-items: stretch; }
-        .step-container { flex: 1.2; background: #1e293b; padding: 22px; border-radius: 12px; border-left: 5px solid var(--primary); display: flex; flex-direction: column; justify-content: flex-start; min-height: 420px; }
-        .step-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #fff; line-height: 1.4; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .option-btn { display: block; width: 100%; padding: 11px 14px; margin: 8px 0; background: #334155; border: 2px solid transparent; border-radius: 8px; color: var(--text-color); text-align: left; cursor: pointer; font-size: 14px; transition: all 0.2s ease; line-height: 1.3; }
-        .option-btn:hover { background: #475569; border-color: #64748b; }
-        .option-btn.selected { background: rgba(74, 222, 128, 0.15); border-color: var(--primary); color: #fff; font-weight: 600; }
+        .landing-hero { text-align: center; max-width: 800px; margin: 0 auto 40px auto; }
+        .landing-hero h1 { font-size: 38px; color: var(--text-light); margin-bottom: 20px; line-height: 1.2; font-weight: 800; }
+        .landing-hero h1 span { color: var(--primary); }
+        .landing-hero p { font-size: 16px; line-height: 1.6; color: #94a3b8; }
         
-        /* Side Fact Box */
-        .side-fact-box { flex: 0.8; background: #1e1b4b; border: 1px solid #4338ca; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: flex-start; font-size: 13px; line-height: 1.45; color: #c7d2fe; }
-        .side-fact-title { font-weight: bold; color: #818cf8; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; font-size: 14px; }
+        .manifesto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .manifesto-box { background: #1a242c; padding: 25px; border-radius: 12px; border: 1px solid #2d3d4b; }
+        .manifesto-box h3 { color: var(--primary); margin-bottom: 12px; font-size: 18px; }
+        .manifesto-box p { font-size: 14px; line-height: 1.5; color: #cbd5e1; }
         
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
-        .nav-btn { padding: 10px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; }
-        .btn-prev { background: #475569; color: white; }
-        .btn-prev:disabled { background: #1e293b; color: #64748b; cursor: not-allowed; }
-        .btn-next { background: var(--primary); color: #0f1319; }
+        .btn-start { display: block; width: 280px; margin: 0 auto; text-align: center; background: var(--primary); color: #0b0f12; padding: 16px 32px; border: none; border-radius: 50px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 20px rgba(74, 222, 128, 0.4); transition: all 0.2s ease; }
+        .btn-start:hover { background: var(--primary-dark); transform: scale(1.03); }
         
-        /* Rechte Seite: Das große Holzfass & Skala */
-        .output-side { flex: 0.9; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; border-left: 1px solid #232f3e; padding-left: 25px; }
+        /* APP / QUIZ SCREEN */
+        .app-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; }
         
-        .visual-area { display: flex; align-items: stretch; gap: 15px; position: relative; height: 380px; margin-top: 10px; }
+        .question-wrapper { display: flex; flex-direction: column; justify-content: space-between; min-height: 480px; }
+        .progress-bar-container { background: #1a242c; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 25px; }
+        .progress-bar { height: 100%; width: 12.5%; background: var(--primary); transition: width 0.3s ease; }
         
-        /* Fass-Grafik */
-        .fass-container { position: relative; width: 260px; height: 100%; background: #090d12; border-radius: 30px / 50px; display: flex; align-items: flex-end; justify-content: space-around; padding: 0 15px; border-bottom: 12px solid #111; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
-        .fass-container::before { content: ""; position: absolute; top: 25%; left: 0; width: 100%; height: 8px; background: #222; box-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 12; pointer-events: none; }
-        .fass-container::after { content: ""; position: absolute; bottom: 25%; left: 0; width: 100%; height: 8px; background: #222; box-shadow: 0 -2px 4px rgba(0,0,0,0.5); z-index: 12; pointer-events: none; }
+        .question-card { background: #1a242c; padding: 30px; border-radius: 14px; border-left: 5px solid var(--primary); margin-bottom: 20px; }
+        .question-title { font-size: 20px; font-weight: 700; color: var(--text-light); margin-bottom: 20px; }
         
-        .daube { position: relative; width: 22px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
-        .daube-wood { width: 100%; background: linear-gradient(to right, #451a03, #7c2d12, #451a03); border-radius: 4px 4px 0 0; border: 1px solid #290b00; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 0 6px rgba(0,0,0,0.6); }
-        .daube-label { position: absolute; bottom: 6px; font-size: 9px; font-weight: 800; color: #f8fafc; text-shadow: 1px 1px 2px #000; text-align: center; white-space: nowrap; transform: rotate(-90deg); transform-origin: left bottom; left: 14px; }
+        .option-btn { display: block; width: 100%; padding: 16px; margin: 12px 0; background: #232e36; border: 2px solid transparent; border-radius: 10px; color: var(--text-color); text-align: left; cursor: pointer; font-size: 15px; transition: all 0.2s ease; }
+        .option-btn:hover { background: #2d3d4b; border-color: #4b5563; }
+        .option-btn.selected { background: rgba(74, 222, 128, 0.12); border-color: var(--primary); color: var(--text-light); font-weight: 700; }
         
-        .water-level { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(59, 131, 246, 0.45); border-top: 2px dashed #60a5fa; transition: height 0.4s ease; z-index: 6; pointer-events: none; }
+        .side-fact-box { background: rgba(168, 85, 247, 0.08); border: 1px dashed var(--accent); padding: 20px; border-radius: 10px; font-size: 13.5px; line-height: 1.5; color: #d8b4fe; margin-top: 15px; }
+        .side-fact-box strong { color: #f3e8ff; display: block; margin-bottom: 4px; }
         
-        .limit-line { position: absolute; left: 0; width: 100%; height: 3px; background-color: var(--danger); box-shadow: 0 0 10px var(--danger); transition: bottom 0.4s ease; z-index: 15; display: none; }
-        .limit-badge { position: absolute; right: 5px; transform: translateY(-50%); background: var(--danger); color: white; padding: 2px 5px; font-size: 9px; font-weight: bold; border-radius: 3px; letter-spacing: 0.5px; }
+        .nav-row { display: flex; justify-content: space-between; margin-top: 20px; }
+        .nav-btn { padding: 12px 28px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: all 0.2s; }
+        .btn-back { background: #2d3d4b; color: white; }
+        .btn-back:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-forward { background: var(--primary); color: #0b0f12; }
         
-        /* Vertikale Skala */
-        .skala-container { display: flex; flex-direction: column; justify-content: space-between; width: 45px; height: 100%; padding: 5px 0; font-size: 11px; font-weight: bold; color: #64748b; border-left: 2px solid #334155; padding-left: 8px; }
-        .skala-mark { position: relative; display: flex; align-items: center; height: 0; }
-        .skala-mark::before { content: ""; position: absolute; left: -10px; width: 6px; height: 2px; background: #334155; }
-        .skala-100 { color: #22c55e; }
-        .skala-75 { color: #a855f7; }
-        .skala-50 { color: #eab308; }
-        .skala-0 { color: #ef4444; }
+        /* VISUAL OUTPUT SIDE */
+        .visual-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0e1317; border-radius: 14px; padding: 30px 20px; border: 1px solid #1a242c; }
         
-        /* Sternengrafik & Score-Widget */
-        .score-widget { width: 100%; margin-top: 15px; display: flex; flex-direction: column; align-items: center; gap: 4px; display: none; background: #1e293b; padding: 10px; border-radius: 10px; border: 1px solid #334155; }
-        .star-rating { display: flex; gap: 4px; font-size: 20px; color: #475569; }
-        .star-rating .active { color: var(--gold); text-shadow: 0 0 8px rgba(245, 158, 11, 0.6); }
-        .score-text { font-size: 13px; font-weight: bold; color: #fff; }
-
-        /* Diagnose & Voodoo Box */
-        .diagnose-box { width: 100%; margin-top: 15px; padding: 15px; border-radius: 10px; background: #111827; border: 1px solid #232f3e; min-height: 90px; }
-        .diagnose-status { font-size: 15px; font-weight: bold; margin-bottom: 5px; }
-        .diagnose-text { font-size: 12.5px; color: #94a3b8; line-height: 1.4; }
-
-        .voodoo-box { width: 100%; margin-top: 12px; padding: 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.3); font-size: 12px; line-height: 1.4; display: none; }
-        .voodoo-title { font-weight: bold; color: #f87171; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        @media (max-width: 950px) {
-            .app-container { flex-direction: column; padding: 20px; }
-            .main-workspace { flex-direction: column; }
-            .side-fact-box { min-height: auto; }
-            .output-side { border-left: none; padding-left: 0; margin-top: 25px; }
+        .barrel-container { position: relative; width: 340px; height: 460px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 25px 20px 25px; border-bottom: 22px solid #1e1e1e; background: #090c0e; border-radius: 12px; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
+        
+        /* Barrel Rings Styles */
+        .barrel-ring { position: absolute; left: 0; width: 100%; height: 10px; background: linear-gradient(to bottom, #4b5563, #374151, #1f2937); border-top: 1px solid #6b7280; border-bottom: 1px solid #111827; opacity: 0.85; z-index: 8; pointer-events: none; }
+        .ring-top { top: 20%; }
+        .ring-middle { top: 50%; }
+        .ring-bottom { bottom: 15%; }
+        
+        .barrel-stave { position: relative; width: 28px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; z-index: 6; }
+        .stave-wood { width: 100%; height: 20px; background: linear-gradient(to right, #5c3a1a, #855428, #4a2e14); border-radius: 4px 4px 0 0; border-left: 1px solid #331f0d; border-right: 1px solid #331f0d; box-shadow: inset 0 0 8px rgba(0,0,0,0.6); transition: height 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .stave-caption { position: absolute; bottom: -22px; width: 100%; font-size: 10px; font-weight: 700; color: #64748b; text-align: center; white-space: nowrap; transform: rotate(-25deg); transform-origin: top center; }
+        
+        .water-body { position: absolute; bottom: 20px; left: 20px; right: 20px; background: linear-gradient(to top, rgba(59, 130, 246, 0.45), rgba(96, 165, 250, 0.6)); border-top: 3px dashed #60a5fa; transition: height 0.6s cubic-bezier(0.25, 1, 0.5, 1); z-index: 4; pointer-events: none; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+        
+        .red-limit-line { position: absolute; left: 15px; right: 15px; height: 3px; background-color: var(--danger); box-shadow: 0 0 12px var(--danger); transition: bottom 0.6s cubic-bezier(0.25, 1, 0.5, 1); z-index: 9; display: none; }
+        .limit-marker { position: absolute; right: 5px; transform: translateY(-50%); background: var(--danger); color: white; padding: 2px 6px; font-size: 9px; font-weight: 900; border-radius: 3px; letter-spacing: 0.5px; }
+        
+        .tacho-scale { position: absolute; right: -40px; top: 0; bottom: 20px; width: 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; font-size: 9px; font-weight: 800; color: #475569; padding-bottom: 5px; }
+        .scale-indicator { width: 6px; height: 100%; background: linear-gradient(to top, var(--danger) 0%, var(--warning) 40%, var(--info) 70%, var(--primary) 100%); border-radius: 3px; margin-right: 4px; }
+        
+        /* FINAL ASSESSMENT REPORT SCREEN */
+        .assessment-screen h2 { font-size: 28px; text-align: center; color: var(--text-light); margin-bottom: 30px; }
+        .score-headline-box { text-align: center; padding: 30px; border-radius: 12px; margin-bottom: 35px; border: 1px solid transparent; }
+        
+        .tier-amateur { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.2); }
+        .tier-voodoo { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.2); }
+        .tier-master { background: rgba(74, 222, 128, 0.08); border-color: rgba(74, 222, 128, 0.2); }
+        
+        .score-headline-box h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .score-stars { font-size: 32px; letter-spacing: 4px; margin: 15px 0; color: #eab308; }
+        .score-percentage { font-size: 15px; color: #94a3b8; font-weight: 600; }
+        
+        .assessment-layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; margin-bottom: 35px; }
+        .critique-section h4 { color: var(--text-light); font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #232e36; padding-bottom: 6px; }
+        .critique-text { font-size: 15px; line-height: 1.6; margin-bottom: 20px; }
+        
+        .voodoo-warning-panel { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); border-radius: 10px; padding: 20px; margin-top: 25px; }
+        .voodoo-warning-panel h5 { color: var(--danger); font-size: 15px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .voodoo-warning-panel p { font-size: 13.5px; line-height: 1.5; color: #b4b6ba; }
+        
+        .graphics-showcase { background: #0e1317; border-radius: 12px; padding: 25px; border: 1px solid #1a242c; display: flex; flex-direction: column; gap: 20px; }
+        .mock-graphic-frame { background: #151c22; border: 1px dashed #2a3742; border-radius: 8px; padding: 20px; text-align: center; }
+        .mock-graphic-frame span { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #475569; display: block; margin-bottom: 10px; font-weight: bold; }
+        .mock-chart-bar { height: 14px; background: #1e293b; border-radius: 7px; overflow: hidden; margin: 6px 0; }
+        .mock-chart-fill { height: 100%; background: var(--accent); width: 0%; transition: width 1s ease; }
+        
+        .action-row { text-align: center; margin-top: 40px; border-top: 1px solid #232e36; padding-top: 30px; }
+        
+        @media (max-width: 900px) {
+            .app-grid, .assessment-layout, .manifesto-grid { grid-template-columns: 1fr; }
+            .visual-panel { margin-top: 30px; }
+            body { padding: 10px; }
+            .master-container { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <!-- LINKSE SEITE: FRAGEBOGEN & INFORMATION -->
-    <div class="input-side">
-        <div>
-            <h1>Die Ertrags-Fass Bibel</h1>
-            <p class="intro-text">Konstante 70–80% auf jeder einzelnen Daube bringen dir das beste Weed deines Lebens. Teures Equipment und 100%-Exzesse verpuffen wirkungslos, sobald eine einzige Daube im Keller hängt.</p>
+<div class="master-container">
+    
+    <!-- SCREEN 1: LANDING PAGE -->
+    <div id="screen-landing" class="screen active">
+        <div class="landing-hero">
+            <h1>Das Liebig-Cannabis-Fass</h1>
+            <p>Die ungeschminkte Realität über dein Setup. Viele Grower investieren Unmengen in High-End-Lampen oder teure Nährstoff-Zusätze, nur um am Ende enttäuscht zu werden. Das Liebigsche Minimumgesetz beweist: <strong>Dein Ertrag wird ausschließlich von deiner kürzesten Daube bestimmt.</strong></p>
+        </div>
+        
+        <div class="manifesto-grid">
+            <div class="manifesto-box">
+                <h3>Das Gesetz des Minimums</h3>
+                <p>Egal wie viel Licht (150%) oder Dünger (200%) du deinen Pflanzen gibst – wenn der pH-Wert falsch steht oder die Wurzeln im Sauerstoffmangel ertrinken, wird das Wachstum exakt auf diesem niedrigen Niveau gedeckelt. Das Wasser läuft an der tiefsten Stelle heraus.</p>
+            </div>
+            <div class="manifesto-box">
+                <h3>Die 70-80% Homegrow-Bibel</h3>
+                <p>Du musst kein fehlerfreies Labor betreiben. Wer es schafft, alle 9 entscheidenden Faktoren konstant auf soliden 70-80% zu halten, wird ein spektakuläres, harzgeladenes Ergebnis einfahren, das jeden unausgeglichenen 100%-Voodoo-Grow meilenweit schlägt.</p>
+            </div>
+        </div>
+        
+        <button class="btn-start" onclick="changeScreen('quiz')">Setup prüfen →</button>
+    </div>
+    
+    <!-- SCREEN 2: INTERAKTIVER FRAGEBOGEN & FASS -->
+    <div id="screen-quiz" class="screen">
+        <div class="app-grid">
             
-            <div class="main-workspace">
-                <div id="question-card" class="step-container">
-                    <!-- Dynamisch befüllt -->
+            <!-- Linker Fragebogen -->
+            <div class="question-wrapper">
+                <div>
+                    <div class="progress-bar-container">
+                        <div id="quiz-progress" class="progress-bar"></div>
+                    </div>
+                    
+                    <div id="quiz-card" class="question-card">
+                        <!-- Dynamisch geladen -->
+                    </div>
+                    
+                    <div id="side-fact" class="side-fact-box">
+                        <!-- Dynamisch geladen -->
+                    </div>
                 </div>
-                <div id="side-fact" class="side-fact-box">
-                    <div class="side-fact-title">💡 Grow-Weisheit</div>
-                    <div id="side-fact-text">Beantworte die erste Frage, um wertvolle wissenschaftliche Erkenntnisse und Insider-Fakten zu deinem Setup freizuschalten.</div>
+                
+                <div class="nav-row">
+                    <button id="btn-back" class="nav-btn btn-back" onclick="navigateQuiz(-1)" disabled>Zurück</button>
+                    <button id="btn-forward" class="nav-btn btn-forward" onclick="navigateQuiz(1)">Weiter</button>
+                </div>
+            </div>
+            
+            <!-- Rechtes Live-Fass -->
+            <div class="visual-panel">
+                <div class="barrel-container">
+                    <!-- Rote Todeslinie -->
+                    <div id="red-line" class="red-limit-line">
+                        <span class="limit-marker">LIMIT</span>
+                    </div>
+                    
+                    <!-- Eisernes Fassringe -->
+                    <div class="barrel-ring ring-top"></div>
+                    <div class="barrel-ring ring-middle"></div>
+                    <div class="barrel-ring ring-bottom"></div>
+                    
+                    <!-- Dynamischer Wasserstand -->
+                    <div id="water-fill" class="water-body" style="height: 0px;"></div>
+                    
+                    <!-- Die 9 Dauben -->
+                    <div class="barrel-stave"><div id="stave-licht" class="stave-wood"></div><div class="stave-caption">Licht</div></div>
+                    <div class="barrel-stave"><div id="stave-substrat" class="stave-wood"></div><div class="stave-caption">Medium</div></div>
+                    <div class="barrel-stave"><div id="stave-giessen" class="stave-wood"></div><div class="stave-caption">Gießen</div></div>
+                    <div class="barrel-stave"><div id="stave-ph" class="stave-wood"></div><div class="stave-caption">pH/EC</div></div>
+                    <div class="barrel-stave"><div id="stave-duenger" class="stave-wood"></div><div class="stave-caption">Dünger</div></div>
+                    <div class="barrel-stave"><div id="stave-klima" class="stave-wood"></div><div class="stave-caption">Klima</div></div>
+                    <div class="barrel-stave"><div id="stave-genetik" class="stave-wood"></div><div class="stave-caption">Genetik</div></div>
+                    <div class="barrel-stave"><div id="stave-training" class="stave-wood"></div><div class="stave-caption">Training</div></div>
+                    <div class="barrel-stave"><div id="stave-hygiene" class="stave-wood"></div><div class="stave-caption">Hygiene</div></div>
+                    
+                    <!-- Ertragstacho / Skala -->
+                    <div class="tacho-scale">
+                        <div style="display: flex; height: 100%; align-items: center;">
+                            <div class="scale-indicator"></div>
+                            <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+                                <div>100%</div>
+                                <div>75%</div>
+                                <div>50%</div>
+                                <div>25%</div>
+                                <div>0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- SCREEN 3: FINALE REALITÄTS-AUSWERTUNG -->
+    <div id="screen-assessment" class="screen">
+        <h2>Deine ungeschminkte Grow-Auswertung</h2>
+        
+        <div id="headline-box" class="score-headline-box">
+            <!-- Dynamisch befüllt -->
+        </div>
+        
+        <div class="assessment-layout">
+            <!-- Linke Textspalte -->
+            <div class="critique-section">
+                <h4>Diagnose & Fehleranalyse</h4>
+                <p id="critique-main-text" class="critique-text"></p>
+                
+                <div class="voodoo-warning-panel">
+                    <h5>⚠️ Die Grow-Industrie-Falle (1-5% Voodoo)</h5>
+                    <p>Produkte wie teure Terpen-Booster, Zuckerzusätze, magische Wurzel-Wunder-Säfte oder gar CO2-Begasungsanlagen bringen messbar nur 1-5% Optimierung. Wenn deine Hauptdauben (wie stabiler pH-Wert oder richtiges Gießen) bei 40% verharren, sind diese Käufe absolute Geldverschwendung! Konzentriere dich auf das Handwerk: Mit sauber dosierter Brennnessel-Jauche und perfektem Gießen holt ein Meister mehr Ertrag als ein Amateur mit einem 300€-Düngersortiment auf dauerfeuchter Erde.</p>
+                </div>
+            </div>
+            
+            <!-- Rechte Grafikspalte -->
+            <div class="graphics-showcase">
+                <div class="mock-graphic-frame">
+                    <span>Nährstoff-Aufnahmeeffizienz (pH-Abhängig)</span>
+                    <div style="font-size:11px; text-align:left; color:#94a3b8; margin-bottom:8px;">Blockade-Risiko bei N-P-K & Mikronährstoffen:</div>
+                    <div class="mock-chart-bar"><div id="chart-ph-lockout" class="mock-chart-fill"></div></div>
+                </div>
+                
+                <div class="mock-graphic-frame">
+                    <span>Photosynthese-Leistung (VPD-Faktor)</span>
+                    <div style="font-size:11px; text-align:left; color:#94a3b8; margin-bottom:8px;">Stomata-Öffnungsgrad (Transpirations-Durchsatz):</div>
+                    <div class="mock-chart-bar"><div id="chart-vpd-perf" class="mock-chart-fill"></div></div>
                 </div>
             </div>
         </div>
         
-        <div class="nav-buttons">
-            <button id="btn-prev" class="nav-btn btn-prev" onclick="prevStep()" disabled>Zurück</button>
-            <button id="btn-next" class="nav-btn btn-next" onclick="nextStep()">Weiter</button>
+        <div class="action-row">
+            <button class="btn-start" style="background:#2d3d4b; color:white; box-shadow:none;" onclick="resetQuiz()">Test wiederholen</button>
         </div>
     </div>
 
-    <!-- RECHTE SEITE: DAS HOLZFASS & DIE BESTIMMUNG -->
-    <div class="output-side">
-        <div class="visual-area">
-            <div class="fass-container">
-                <div id="limit-line" class="limit-line"><span class="limit-badge">LIMIT</span></div>
-                <div id="water-level" class="water-level" style="height: 0%;"></div>
-                
-                <!-- Die 9 Dauben des wahren Ertrags -->
-                <div class="daube"><div id="d-licht" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Licht/Zelt</div></div>
-                <div class="daube"><div id="d-medium" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Substrat</div></div>
-                <div class="daube"><div id="d-wasser" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Gießen</div></div>
-                <div class="daube"><div id="d-ph" class="daube-wood" style="height: 15%;"></div><div class="daube-label">pH/EC</div></div>
-                <div class="daube"><div id="d-naehr" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Düngung</div></div>
-                <div class="daube"><div id="d-klima" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Klima (VPD)</div></div>
-                <div class="daube"><div id="d-genetik" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Genetik</div></div>
-                <div class="daube"><div id="d-training" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Training</div></div>
-                <div class="daube"><div id="d-hygiene" class="daube-wood" style="height: 15%;"></div><div class="daube-label">Hygiene</div></div>
-            </div>
-            
-            <div class="skala-container">
-                <div class="skala-mark skala-100">100%</div>
-                <div class="skala-mark skala-75">75%</div>
-                <div class="skala-mark skala-50">50%</div>
-                <div class="skala-mark skala-0">0%</div>
-            </div>
-        </div>
-
-        <!-- Sternen-Bewertung -->
-        <div id="score-widget" class="score-widget">
-            <div id="star-rating" class="star-rating"></div>
-            <div id="score-text" class="score-text">0 / 10 Punkte</div>
-        </div>
-
-        <div class="diagnose-box">
-            <div id="diag-status" class="diagnose-status" style="color: #64748b;">System bereit</div>
-            <div id="diag-text" class="diagnose-text">Konfrontiere dich mit den Fragen. Das Fass lügt nicht.</div>
-        </div>
-
-        <div id="voodoo-box" class="voodoo-box">
-            <div class="voodoo-title">⚠️ Die 1-5% Marketing-Falle</div>
-            <div id="voodoo-text"></div>
-        </div>
-    </div>
 </div>
 
 <script>
-    const fragen = [
+    const db = [
         {
             key: "licht",
-            title: "1. Licht & Raum: Passt deine Leistung zur Fläche?",
-            fact: "Fakt: Viele werfen Geld für High-End-LEDs aus dem Fenster, ernten mangels Tiefenwirkung/Balance aber nur 1g/W. Profis wie '420autoflower' erzielen durch minutiöses Justieren und DLI-Messung fast 2kg Trockenmasse aus einer optimierten 400W LED!",
+            title: "1. Licht & Raum: Wie harmoniert deine Beleuchtung mit der Fläche?",
+            fact: "<strong>Sanlight & Co. Praxis-Fakt:</strong> Eine High-End-LED nützt rein gar nichts, wenn sie falsche Abstände hat oder die Ausleuchtung Hotspots bildet. Konstantes Messen von PPFD und DLI verhindert Lichtstress und spart massiv Stromkosten.",
             options: [
-                { text: "Katastrophe: Billige Amazon-Lampe ('1000W' für 40€) oder Fensterbank", wert: 15 },
-                { text: "Mangelhaft: Zu schwache Lampe für die Zeltfläche oder falscher Abstand", wert: 40 },
-                { text: "Gut: Moderne LED mit Marken-Chips (Sanlight, Lumatek, Mars Hydro etc.) passend zur Fläche", wert: 75 },
-                { text: "Profi-Liga: Top-LED + tägliche Höhenanpassung + PPFD & DLI exakt per App/Sensor eingemessen", wert: 100 }
+                { text: "Billige Amazon-Lampe / Fensterbank / Falsche Watt-Leistung für die Zeltfläche", wert: 15 },
+                { text: "Ältere NDL oder einfache LED-Boards; Hängung und Abstände erfolgen rein nach Augenmaß", wert: 45 },
+                { text: "Moderne Marken-LED (Sanlight, Lumatek etc.) passend zur Fläche; Abstände nach Herstellerangabe", wert: 75 },
+                { text: "Profi-Level: High-End LED, permanente Kontrolle von PPFD/DLI per Sensor/App und stetiges Nachjustieren", wert: 100 }
             ]
         },
         {
-            key: "medium",
-            title: "2. Anbaumedium: Welches Substrat bildet deine Basis?",
-            fact: "Fakt: Das gewählte Medium setzt systemische Grenzen. Organische Erde puffert Fehler fantastisch ab, bremst aber durch die trägere Mikrobiologie das maximale Wachstumstempo im Vergleich zu hydroponischen Durchlauferhitzern auf etwa 70% aus.",
+            key: "substrat",
+            title: "2. Anbaumedium: Auf welchem Substrat stehen deine Wurzeln?",
+            fact: "<strong>Wachstumsspeed-Fakt:</strong> Organische Erde puffert Fehler hervorragend, bremst aber rein physikalisch die maximale Nährstoff- und Wachstumsgeschwindigkeit bei ca. 70% ein. Hydro- und Kokos-Systeme haben keine organische Bremse.",
             options: [
-                { text: "Minderwertig: Alte, recycelte Baumarkterde ohne Belüftung (Perlite)", wert: 25 },
-                { text: "Solide: Klassische torfbasierte oder organische Grow-Erde (z.B. BioBizz, Plagron) [Deckel bei 70%]", wert: 70 },
-                { text: "Fortgeschritten: Kokos/Perlite-Gemisch (vollwertiges Hydro-Gefühl bei richtiger Düngung)", wert: 85 },
-                { text: "Maximale Performance: Hydroponisches High-End System (DWC, NFT, Aero) voll kontrolliert", wert: 100 }
+                { text: "Ausgezehrte Baumarkterde oder minderwertige, schlecht gelagerte Vormischungen", wert: 20 },
+                { text: "Klassische Bio-Erde (z.B. BioBizz Light/AllMix) oder torfbasierte Grow-Erden", wert: 70 },
+                { text: "Kokos-Substrat (Coir) mit kontrollierter, mineralischer Nährstoffzufuhr", wert: 90 },
+                { text: "Reine Hydroponik / DWC (Deep Water Culture) / Rezirkulierende High-Tech Systeme", wert: 100 }
             ]
         },
         {
-            key: "wasser",
-            title: "3. Gießverhalten: Wie steuerst du den Wasserhaushalt?",
-            fact: "Fakt: Falsches Gießen ist Anfängerfehler Nr. 1. Dauerfeuchte Erde erstickt die Wurzeln (Sauerstoffmangel). Keine Wurzeln bedeutet null Nährstoffaufnahme – da hilft auch der teuerste Dünger der Welt nicht mehr.",
+            key: "giessen",
+            title: "3. Gießverhalten: Wie steuerst du den Wasser- & Sauerstoffhaushalt?",
+            fact: "<strong>Die Wurzel-Katastrophe:</strong> Dauerfeuchte Erde erstickt die Wurzeln. Sauerstoffmangel führt unweigerlich zu verkümmerten Pflanzen. Das Wechselspiel aus Nass- und Trockenphasen ist elementar für gesundes Wurzelhaar.",
             options: [
-                { text: "Tödlich: Ich gieße jeden Tag ein bisschen, die Erde ist dauerfeucht und matschig", wert: 10 },
-                { text: "Schlecht: Plastiktopf – Ich gieße stur nach festen Tagen, egal wie schwer der Topf ist", wert: 35 },
-                { text: "Akzeptabel: Ich gieße erst, wenn die oberen Zentimeter komplett trocken sind", wert: 55 },
-                { text: "Sehr gut: Stofftopf/Air-Pot – Ich gieße durchdringend und erst bei 50% Gewichtsverlust", wert: 80 },
-                { text: "Perfektion: Automatisches System (z.B. Autopot / Tropfbewässerung) mit idealer Sauerstoffzufuhr", wert: 100 }
+                { text: "Ich gieße täglich kleine Schlucke nach Gefühl. Die Erde ist permanent feucht.", wert: 10 },
+                { text: "Ich gieße viel zu viel auf einmal, ohne dass überschüssiges Wasser (Drain) ablaufen kann.", wert: 25 },
+                { text: "Plastiktopf: Ich gieße erst, wenn die Oberfläche komplett trocken aussieht.", wert: 45 },
+                { text: "Stofftopf / Air-Pot: Ich gieße strukturiert nach spürbarem Gewicht des Topfes.", wert: 75 },
+                { text: "Gewichtskontrolle + 15% Drain, um angesammelte Nährsalze zuverlässig auszuspülen.", wert: 90 },
+                { text: "Sensor- oder Systemgesteuert: Automatisches Gießen (z.B. Autopot / Tropfsysteme) mit perfekter Belüftung", wert: 100 }
             ]
         },
         {
             key: "ph",
-            title: "4. Wasserchemie: Kontrollierst du pH- und EC-Werte?",
-            fact: "Fakt: Der pH-Wert ist das Tor zur Pflanze. Liegt er auf Erde über 7.0 oder unter 6.0, schließt sich das Tor physisch. Nährstoffe blockieren sich gegenseitig (Nutrient Lockout), obwohl der Boden voll davon ist.",
+            title: "4. Wasserchemie: Kontrollierst du pH-Wert und Nährstoffdichte (EC)?",
+            fact: "<strong>Der unsichtbare Türsteher:</strong> Cannabis kann Nährstoffe nur in einem winzigen pH-Fenster aufnehmen. Liegt der pH-Wert über 7.0, erleidet die Pflanze eine Nährstoffsperre (Lockout) – sie verhungert vor vollem Napf.",
             options: [
-                { text: "Blindflug: Pures Leitungswasser ohne jegliche Messung oder Anpassung", wert: 10 },
-                { text: "Ungenau: Ich nutze Teststreifen oder unkalibrierte Billig-Messgeräte", wert: 35 },
-                { text: "Gut: Ich messe den pH-Wert digital, passe ihn an und kalibriere mein Gerät regelmäßig", wert: 75 },
-                { text: "Profi: Vollständige pH-Korrektur plus EC-Überwachung (Salzkonzentration/Nährstoffdichte)", wert: 100 }
+                { text: "Nein, ich nutze unbehandeltes Leitungswasser direkt aus dem Hahn.", wert: 0 },
+                { text: "Ich nutze ungenaue Teststreifen oder billige gelbe Messgeräte, die nie kalibriert werden.", wert: 30 },
+                { text: "Ich messe den pH-Wert regelmäßig digital und kalibriere mein Gerät monatlich.", wert: 70 },
+                { text: "Ich messe und korrigiere den pH-Wert digital und kontrolliere den EC-Wert (Nährsalzkonzentration).", wert: 90 },
+                { text: "Volle Kontrolle: pH- und EC-Messung des Gießwassers UND des Drains (Rücklauf-Kontrolle auf Versalzung).", wert: 100 }
             ]
         },
         {
-            key: "naehr",
-            title: "5. Düngung: Wie ernährst du deine Pflanzen?",
-            fact: "Fakt: Wer das Handwerk und die N-P-K-Bedarfe versteht, holt mit simpler, gut angesetzter Brennnessel-Jauche ein spektakuläreres Ergebnis heraus als ein Anfänger, der ein 250€ Dünger-Set stur nach Schema in den Boden kippt und alles verbrennt.",
+            key: "duenger",
+            title: "5. Nährstoff-Management: Wie führst du Dünger zu?",
+            fact: "<strong>Weniger ist mehr:</strong> Überdüngung blockiert die Pflanze drastischer als ein leichter Mangel. Ein Grower, der das N-P-K-Verhältnis versteht und liest, erzielt mit einfachster Jauche bessere Ergebnisse als blinde Schema-Dünger.",
             options: [
-                { text: "Katastrophe: Billiger Blaudünger / Universal-Zimmerpflanzendünger nach Gefühl", wert: 15 },
-                { text: "Riskant: Viel hilft viel! Ich kippe bei jedem Mangel direkt die doppelte Dosis rein", wert: 30 },
-                { text: "Standard: Ich nutze Grow-Dünger und halte mich blind an das offizielle Herstellerschema", wert: 65 },
-                { text: "Fortgeschritten: Ich dünge präzise nach N-P-K Bedarf, angepasst an Vegi- oder Blütewoche", wert: 85 },
-                { text: "Meisterhaft: Düngung exakt kalibriert auf Blattfarbe, Pflanzennachfrage und Substrat-EC", wert: 100 }
+                { text: "Billiger Universaldünger aus dem Supermarkt, verabreicht nach gut Glück.", wert: 15 },
+                { text: "Grow-Düngerset verwendet, ich kippe stur bei jedem Gießen die volle Dosis nach Schema hinein.", wert: 50 },
+                { text: "Ich dünge streng nach Herstellerschema, passe die Dosis aber bei sichtbarem Überschuss an.", wert: 75 },
+                { text: "Ich verstehe die N-P-K Bedürfnisse der Wachstums- vs. Blütephase exakt und dünge bedarfsorientiert.", wert: 95 },
+                { text: "Präzisions-Ernährung: Düngerzufuhr wird exakt auf den gemessenen EC-Wert des Drains und den Pflanzenzustand abgestimmt.", wert: 100 }
             ]
         },
         {
             key: "klima",
-            title: "6. Klima & Luft: Beachtest du das Dampfdruckdefizit (VPD)?",
-            fact: "Fakt: Eine Sanlight-Studie belegt unmissverständlich: Ein konstanter, optimierter VPD-Wert (Zusammenspiel aus Temperatur & Luftfeuchtigkeit) ist der am meisten unterschätzte Hebel für brutale Ertragssteigerungen im Homegrow!",
+            title: "6. Umgebungsklima: Wie gut beherrschst du Temperatur, Luftfeuchte und VPD?",
+            fact: "<strong>Underrated VPD-Faktor:</strong> Wissenschaftliche Studien zeigen: Das Dampfdruckdefizit (VPD) regelt, wie weit sich die Spaltöffnungen der Blätter öffnen. Falsches Klima blockiert die Photosynthese komplett, egal wie viel Watt strahlen.",
             options: [
-                { text: "Unzureichend: Kein Lüfter, keine Abluft – die Luft steht komplett im Raum", wert: 15 },
-                { text: "Schwach: Abluft läuft, aber Temperatur und RLF schwanken massiv je nach Wetter", wert: 45 },
-                { text: "Solide: Starke Abluft + Umluft laufen 24/7, Werte sind im groben Wohlfühlbereich", wert: 75 },
-                { text: "High-End: Aktive Steuerung der Transpiration via exakter VPD-Tabelle (Vegi vs. Blüte)", wert: 100 }
+                { text: "Keine aktive Abluft, kein Umluftventilator. Raumklima schwingt völlig unkontrolliert mit.", wert: 10 },
+                { text: "Abluft läuft, aber Temperatur und RLF schwanken massiv je nach Wetterlage im Zimmer.", wert: 40 },
+                { text: "Abluft und Umluft laufen permanent. Die Werte liegen meistens in einem akzeptablen Rahmen.", wert: 75 },
+                { text: "Profi-Steuerung: Temperatur und Luftfeuchtigkeit werden gezielt kontrolliert, um den optimalen VPD-Wert zu halten.", wert: 100 }
             ]
         },
         {
             key: "genetik",
             title: "7. Genetik: Welches biologische Potenzial kaufst du ein?",
-            fact: "Fakt: Genetik bestimmt die biologische Obergrenze des Fasses. Billige Bulk-Seeds sind oft genetisch instabiler Ausschuss. Wer unselektierte Samen nutzt, spielt Lotterie – das wahre Maximum schalten nur verifizierte Elite-Cuts frei.",
+            fact: "<strong>Die Genetik-Grenze:</strong> Schlechte Genetik hat eine unumstößliche biologische Obergrenze. Bulk-Seeds sind oft genetisches Glücksspiel (Ausschussware). Nur selektierte Schnitte garantieren maximale Ertragsstabilität.",
             options: [
-                { text: "Schlechteste Wahl: Billige Massen-Samen (Bulk-Seeds) von No-Name-Resellern", wert: 20 },
-                { text: "Glücksspiel: Ein zufälliger Bagseed aus gekauftem Gras (kann genial sein, zwittert oft)", wert: 35 },
-                { text: "Mittelklasse: Standard-Samenbanken aus der Werbung (z.B. günstige RQS-Sorten)", wert: 60 },
-                { text: "Oberklasse: Unselektierte Premium-Samen von echten Zuchtmeistern (z.B. Serious, Ace, Serious Seeds)", wert: 80 },
-                { text: "Absolute Spitze: Verifizierter 1A-Steckling (Elite-Cut) oder mühsam selbst selektierte Mutterpflanze", wert: 100 }
+                { text: "Minderwertige Bulk-Seeds von billigen Massenproduzenten (Zucht-Lotterie).", wert: 20 },
+                { text: "Zufälliger Samen aus gekauftem Weed ('Bagseed') – Kann ein seltener Glückstreffer sein.", wert: 40 },
+                { text: "Renommierte Samenbanken (z.B. Sensi, Barney's etc.), reguläre oder feminisierte Samen unselektiert.", wert: 75 },
+                { text: "Moderne High-End Genetik von Top-US/EU-Breedern (als Samen ungeprüft).", wert: 85 },
+                { text: "Absolutes Maximum: Verifizierte 1A-Stecklinge (Elite-Cuts) oder langjährig selektierte eigene Mutterpflanze.", wert: 100 }
             ]
         },
         {
             key: "training",
-            title: "8. Zeltausnutzung: Beherrschst du das Canopy Management?",
-            fact: "Fakt: Licht, das ungenutzt den Zeltboden beleuchtet, ist verbranntes Geld. Eine einzelne Pflanze, die per SCROG flachgelegt wird, liefert durch optimale Ausleuchtung aller Buds ein Vielfaches einer wild gewachsenen Tanne.",
+            title: "8. Canopy Management: Nutzt du Pflanzentraining und Scrog?",
+            fact: "<strong>Flächen-Ausnutzung:</strong> Wer Pflanzen einfach nur tannenbaumartig wachsen lässt, verschwendet wertvolles Licht an den Zeltboden. Ein ebenes Knospendach maximiert den Ertrag pro Quadratmeter drastisch.",
             options: [
-                { text: "Naturwuchs: Die Pflanze wächst als Tannenbaum, unten Schatten, oben eine einzige Cola", wert: 30 },
-                { text: "Ansatzweise: Ich schneide ab und zu Blätter ab oder knicke mal einen Trieb um", wert: 50 },
-                { text: "Gut: Konsequentes Lollipopping (Schattenknospen weg) + leichtes Runterbinden (LST)", wert: 75 },
-                { text: "Perfekt ausgenutzt: Ein absolut ebenes Blütenmeer via SCROG / SOG – kein Lumen wird verschwendet", wert: 100 }
+                { text: "Kein Training. Die Pflanzen wachsen naturbelassen, viel Licht scheint ungenutzt auf den Boden.", wert: 20 },
+                { text: "Einfaches Beschneiden (Topping/Fimming) oder grobes Runterbinden der Haupttriebe.", wert: 55 },
+                { text: "Fortgeschritten: Gleichmäßiges Herunterbinden (LST) gepaart mit konsequentem Lollipopping (Schattenblüten entfernen).", wert: 80 },
+                { text: "Perfektes Blütendach: Konsequenter SCROG (Screen of Green) oder SOG. Jeder Quadratzentimeter wird gleichmäßig ausgeleuchtet.", wert: 100 }
             ]
         },
         {
             key: "hygiene",
-            title: "9. Hygiene & Prävention: Wie schützt du dein Ökosystem?",
-            fact: "Fakt: Der unsichtbare Genickbruch. Spinnmilben in Woche 5 der Blüte oder Schimmel (Budrot) kurz vor der Ernte reißen deine Daube auf Null. Wer nicht präventiv filtert und sauber arbeitet, verliert alles.",
+            title: "9. Hygiene & Prävention: Wie gut schützt du dein Ökosystem?",
+            fact: "<strong>Der plötzliche Genickbruch:</strong> Spinnmilben, Trauermücken oder Budrot (Blütenfäule) in Woche 6 zerstören monatelange Arbeit in wenigen Tagen. Prävention schlägt jede chemische Keule im Nachgang.",
             options: [
-                { text: "Gefährlich: Ich gehe in Straßenkleidung direkt vom Wald ins Zelt, Haustiere dürfen schnuppern", wert: 15 },
-                { text: "Nachlässig: Ich reagiere erst, wenn ich Gespinste, Flecken oder Schimmel mit bloßem Auge sehe", wert: 45 },
-                { text: "Sauber: Gelbtafeln hängen, Zelt wird desinfiziert, Zuluft läuft strikt über Filtervlies", wert: 80 },
-                { text: "Festung: Mikroskopische Vorkontrollen, Null-Toleranz-Sauberkeit, optimierte Umluft gegen Feuchtnester", wert: 100 }
+                { text: "Keine Vorsichtsmaßnahmen. Ich gehe oft direkt in Outdoor-Kleidung an das offene Zelt.", wert: 15 },
+                { text: "Ich reagiere erst, wenn Schädlinge oder Schimmel bereits deutlich mit bloßem Auge sichtbar sind.", wert: 40 },
+                { text: "Gelbtafeln hängen, Zelt wird zwischen den Grows gereinigt. Stichprobenartige Kontrollen der Blattunterseiten.", wert: 75 },
+                { text: "Festes Protokoll: Sauberkeits-Kleidungswechsel, Nützlinge werden vorbeugend eingesetzt, penible RLF-Kontrolle in der Spätblüte.", wert: 100 }
             ]
         }
     ];
 
-    let aktuellerSchritt = 0;
-    let antworten = { licht: null, medium: null, wasser: null, ph: null, naehr: null, klima: null, genetik: null, training: null, hygiene: null };
+    let currentIdx = 0;
+    let scores = { licht: null, substrat: null, giessen: null, ph: null, duenger: null, klima: null, genetik: null, training: null, hygiene: null };
 
-    const daubenIds = {
-        licht: "d-licht", medium: "d-medium", wasser: "d-wasser", ph: "d-ph", naehr: "d-naehr", klima: "d-klima", genetik: "d-genetik", training: "d-training", hygiene: "d-hygiene"
-    };
+    function changeScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-' + screenId).classList.add('active');
+        if (screenId === 'quiz') renderQuestion();
+    }
 
-    function renderStep() {
-        const card = document.getElementById("question-card");
-        const factText = document.getElementById("side-fact-text");
+    function renderQuestion() {
+        const q = db[currentIdx];
+        const card = document.getElementById("quiz-card");
+        const factBox = document.getElementById("side-fact");
         
-        if (aktuellerSchritt < fragen.length) {
-            const frage = fragen[aktuellerSchritt];
-            factText.innerText = frage.fact;
-            
-            let html = `<div class="step-title">${frage.title}</div>`;
-            frage.options.forEach((opt) => {
-                const isSelected = antworten[frage.key] === opt.wert ? "selected" : "";
-                html += `<button class="option-btn ${isSelected}" onclick="waehleOption('${frage.key}', ${opt.wert})">${opt.text}</button>`;
-            });
-            
-            card.innerHTML = html;
-            document.getElementById("btn-next").innerText = "Weiter";
-        } else {
-            factText.innerText = "Das goldene Gesetz: Bringe alle Dauben gleichmäßig auf 70-80%. Ein harmonisches System belohnt dich mit maximaler Potenz und makellosen Erntemengen. Schalte deinen Verstand ein und ignoriere das Voodoo-Marketing!";
-            card.innerHTML = `
-                <div class="step-title" style="color: var(--primary); text-align:center;">✓ Auswertung vollendet!</div>
-                <p style="text-align:center; font-size:13.5px; line-height:1.6; margin-top:5px;">
-                    Dein Setup wurde knallhart analysiert. Rechts siehst du die nackte Wahrheit deines Liebigschen Fasses inklusive deiner Sternen-Bewertung.
-                </p>
-                <button class="option-btn" style="text-align:center; margin-top:15px; background: rgba(74, 222, 128, 0.1);" onclick="resetApp()">Test wiederholen</button>
+        let html = `<div class="question-title">${q.title}</div>`;
+        q.options.forEach(opt => {
+            const isSel = scores[q.key] === opt.wert ? "selected" : "";
+            html += `<button class="option-btn ${isSel}" onclick="selectOption('${q.key}', ${opt.wert})">${opt.text}</button>`;
+        });
+        
+        card.innerHTML = html;
+        factBox.innerHTML = `<strong>Praxis-Fakt & Wissenschaft:</strong>${q.fact}`;
+        
+        // Progress Bar
+        const prog = ((currentIdx + 1) / db.length) * 100;
+        document.getElementById("quiz-progress").style.width = prog + "%";
+        
+        // Buttons
+        document.getElementById("btn-back").disabled = currentIdx === 0;
+        document.getElementById("btn-forward").innerText = currentIdx === db.length - 1 ? "Zur Auswertung" : "Weiter";
+    }
+
+    function selectOption(key, value) {
+        scores[key] = value;
+        document.getElementById("stave-" + key).style.height = value + "%";
+        updateBarrelVisuals();
+        renderQuestion();
+    }
+
+    function navigateQuiz(dir) {
+        const currentKey = db[currentIdx].key;
+        if (dir === 1 && scores[currentKey] === null) {
+            alert("Bitte wähle eine Option aus, bevor du fortfährst!");
+            return;
+        }
+        
+        if (dir === 1 && currentIdx === db.length - 1) {
+            evaluateFinalScore();
+            return;
+        }
+        
+        currentIdx += dir;
+        renderQuestion();
+    }
+
+    function updateBarrelVisuals() {
+        let activeValues = [];
+        let lowest = 100;
+        let answeredCount = 0;
+
+        for (let k in scores) {
+            let val = scores[k] !== null ? scores[k] : 0;
+            if (scores[k] !== null) {
+                answeredCount++;
+                if (val < lowest) lowest = val;
+            }
+            activeValues.push(val);
+        }
+
+        if (answeredCount === 0) return;
+
+        // Container height calculations
+        const containerHeight = 440 - 20; // total height minus padding
+        const fillPx = (lowest / 100) * containerHeight;
+        
+        document.getElementById("water-fill").style.height = fillPx + "px";
+        
+        const redLine = document.getElementById("red-line");
+        redLine.style.display = "block";
+        redLine.style.bottom = `calc(${lowest}% + 20px)`;
+    }
+
+    function evaluateFinalScore() {
+        let lowest = 100;
+        let bottleneckKey = "";
+        
+        for (let k in scores) {
+            if (scores[k] < lowest) {
+                lowest = scores[k];
+                bottleneckKey = k;
+            }
+        }
+
+        const headBox = document.getElementById("headline-box");
+        const critiqueText = document.getElementById("critique-main-text");
+        
+        // Remove old classes
+        headBox.className = "score-headline-box";
+        
+        // Calculate Stars out of 10
+        let starsCount = Math.max(1, Math.round(lowest / 10));
+        let starsStr = "★".repeat(starsCount) + "☆".repeat(10 - starsCount);
+
+        let bottleneckName = {
+            licht: "deiner Licht- & Raumplanung",
+            substrat: "deiner Substratwahl (Medium)",
+            giessen: "deinem Gießverhalten",
+            ph: "deinen pH/EC-Wasserwerten",
+            duenger: "deiner Dünger-Dosierung",
+            klima: "deinem Umgebungsklima (VPD)",
+            genetik: "deiner Samen-Genetik",
+            training: "deinem Pflanzentraining",
+            hygiene: "deiner Hygiene & Prävention"
+        }[bottleneckKey];
+
+        // Fill visual charts dynamically
+        document.getElementById("chart-ph-lockout").style.width = (scores.ph !== null ? scores.ph : 20) + "%";
+        document.getElementById("chart-vpd-perf").style.width = (scores.klima !== null ? scores.klima : 20) + "%";
+
+        if (lowest <= 40) {
+            headBox.classList.add("tier-amateur");
+            headBox.innerHTML = `
+                <h3 style="color:var(--danger)">🔴 Zone: Die Mängel-Hölle (Amateur)</h3>
+                <div class="score-stars">${starsStr}</div>
+                <div class="score-percentage">Reales Ertragspotenzial gedeckelt auf: ${lowest}%</div>
             `;
-            document.getElementById("btn-next").innerText = "Fertig";
-        }
-        document.getElementById("btn-prev").disabled = aktuellerSchritt === 0;
-    }
-
-    function waehleOption(key, wert) {
-        antworten[key] = wert;
-        document.getElementById(daubenIds[key]).style.height = wert + "%";
-        renderStep();
-        berechneFass();
-    }
-
-    function nextStep() {
-        if (aktuellerSchritt < fragen.length) {
-            const frage = fragen[aktuellerSchritt];
-            if (antworten[frage.key] === null) {
-                alert("Bitte triff eine ehrliche Auswahl, bevor du fortfährst!");
-                return;
-            }
-            aktuellerSchritt++;
-            renderStep();
-            berechneFass();
-        }
-    }
-
-    function prevStep() {
-        if (aktuellerSchritt > 0) {
-            aktuellerSchritt--;
-            renderStep();
-        }
-    }
-
-    function berechneFass() {
-        let mindestWert = 100;
-        let summeWerte = 0;
-        let beantworteteAnzahl = 0;
-        let kritischerFaktor = "";
-
-        for (let key in antworten) {
-            if (antworten[key] !== null) {
-                summeWerte += antworten[key];
-                beantworteteAnzahl++;
-                if (antworten[key] < mindestWert) {
-                    mindestWert = antworten[key];
-                    kritischerFaktor = key;
-                }
-            }
-        }
-
-        if (beantworteteAnzahl === 0) return;
-
-        // Wasser & Limit-Linie aktualisieren
-        document.getElementById("water-level").style.height = mindestWert + "%";
-        const limitLine = document.getElementById("limit-line");
-        limitLine.style.display = "block";
-        limitLine.style.bottom = mindestWert + "%";
-
-        // Sternen-Rating berechnen (Mischung aus Konstanz & Gesamtqualität)
-        // Strafe für große Unterschiede (Liebig-Effekt schlägt voll durch)
-        let basisSterne = Math.round((mindestWert * 0.7) + ((summeWerte / beantworteteAnzahl) * 0.3));
-        let sterneScore = Math.max(1, Math.min(10, Math.round(basisSterne / 10)));
-
-        // Zeige Sterne-Widget ab der Hälfte oder am Ende
-        const scoreWidget = document.getElementById("score-widget");
-        scoreWidget.style.display = "flex";
-        
-        let starHtml = "";
-        for(let i=1; i<=10; i++) {
-            starHtml += `<span class="${i <= sterneScore ? 'active' : ''}">★</span>`;
-        }
-        document.getElementById("star-rating").innerHTML = starHtml;
-        document.getElementById("score-text").innerText = `${sterneScore} / 10 Punkte (Ertrags-Potenzial)`;
-
-        // Texte ausgeben
-        const statusEl = document.getElementById("diag-status");
-        const textEl = document.getElementById("diag-text");
-        const voodooBox = document.getElementById("voodoo-box");
-        const voodooText = document.getElementById("voodoo-text");
-
-        let deutschesWort = {
-            licht: "deinem LICHT- & RAUMKONZEPT",
-            medium: "deinem SUBSTRAT (Medium)",
-            wasser: "deinem GIEẞVERHALTEN",
-            ph: "deiner WASSERCHEMIE (pH/EC)",
-            naehr: "deiner DÜNGUNG",
-            klima: "deiner KLIMA-KONTROLLE (VPD)",
-            genetik: "deiner GENETIK-AUSWAHL",
-            training: "deiner ZELTAUSNUTZUNG (Training)",
-            hygiene: "deiner HYGIENE & PRÄVENTION"
-        }[kritischerFaktor];
-
-        // Voodoo-Fallen-Texte je nach Schwachstelle
-        let voodooInfos = {
-            licht: "Du überlegst, teure Zusatz-Booster oder Zucker-Zusätze zu kaufen? Spar dir das Geld. Deine Pflanze kann ohne adäquates Licht die Grund-Photosynthese nicht hochfahren. Optimiere erst die Ausleuchtung!",
-            medium: "Teurer High-End Dünger bringt auf schlecht belüfteter, verdichteter Erde gar nichts. Das Substrat limitiert den Gasaustausch der Wurzeln. Bevor du Zusätze kaufst, optimiere die Wurzel-Sauerstoffzufuhr.",
-            wasser: "Wurzelstimulanzien für 50€ lösen dein Problem nicht. Solange du zu oft gießt, verfaulen die neuen Spitzen sofort wieder. Lerne das Gießen nach Topfgewicht!",
-            ph: "Die Grow-Industrie liebt es, dir 'Mangel-Zusätze' wie extra Eisen oder Zink zu verkaufen. Fakt ist: Bei falschem pH-Wert blockiert die Pflanze die Aufnahme selbst. Reguliere den pH-Wert statt mehr Dünger reinzukippen!",
-            naehr: "Teure 'Terpen-Booster' oder 'Blüten-Turbo-Säfte' versprechen Wunder. Wer aber die Basis-NPK-Werte nicht im Griff hat und stur nach Schema überdüngt, verbrennt die Ernte. Nutze deinen Verstand statt Marketing-Flaschen.",
-            klima: "CO2-Begasungs-Kits für hunderte Euro sind nutzlos, solange deine Luftfeuchtigkeit und Temperatur (VPD) Achterbahn fahren. Erst wenn das Klima perfekt steht, greifen minimale Optimierungen.",
-            genetik: "Wundersame 'Ertrags-Sprays' retten keine instabile Bulk-Genetik. Investiere dein Geld beim nächsten Mal lieber in einen sauberen, verifizierten Elite-Steckling anstatt in teure Zaubermittel.",
-            training: "Du kaufst teures Equipment, aber lässt deine Pflanze wachsen wie sie will? Jedes Lumen, das den nackten Zeltboden statt ein Blatt trifft, ist verschwendetes Geld. Setze auf SCROG oder konsequentes Runterbinden!",
-            hygiene: "Teure Stärkungsmittel nützen absolut gar nichts, wenn du Schädlinge per Straßenkleidung einschleppst oder Feuchtnester Schimmel provozieren. Prävention schlägt jede chemische Keule nach dem Ausbruch."
-        }[kritischerFaktor];
-
-        if (mindestWert <= 25) {
-            statusEl.innerText = "🚨 Akuter Ertrags-Kollaps!";
-            statusEl.style.color = "var(--danger)";
-            textEl.innerText = `Deine Ausbeute wird extrem limitiert durch ${deutschesWort}! Hier läuft das Wasser komplett aus dem Fass. Es macht absolut keinen Sinn, Geld für irgendetwas anderes auszugeben, solange dieses Fundament tief im roten Bereich liegt.`;
-            voodooBox.style.display = "block";
-            voodooText.innerText = voodooInfos;
-        } else if (mindestWert <= 55) {
-            statusEl.innerText = "⚠️ Ertrag massiv gedeckelt";
-            statusEl.style.color = "var(--warning)";
-            textEl.innerText = `Dein Setup hat Potenzial, wird aber empfindlich durch ${deutschesWort} ausgebremst. Schraube mit Verstand genau an diesem Hebel, anstatt dein Geld für 1-5% Voodoo-Produkte auszugeben.`;
-            voodooBox.style.display = "block";
-            voodooText.innerText = voodooInfos;
-        } else if (mindestWert <= 79) {
-            statusEl.innerText = "🌿 Das goldene Homegrow-Niveau!";
-            statusEl.style.color = "var(--info)";
-            textEl.innerText = `Hervorragend! Du hältst deine Dauben konstant im Bereich von 70-80%. Damit wirst du ein Endergebnis erzielen, das qualitativ absolut phänomenal ist. Widerstehe dem Drang, einzelne Faktoren für viel Geld auf 100% zu pushen, wenn ${deutschesWort} das reale Maximum leicht deckelt.`;
-            voodooBox.style.display = "block";
-            voodooText.innerText = "Hervorragende Balance! Dein Fass ist extrem stabil. Lass dich jetzt nicht von der Werbeindustrie dazu verleiten, teuren Schnickschnack zu kaufen. Halte dieses exzellente Gleichgewicht aufrecht.";
+            critiqueText.innerHTML = `<strong>Harter Realitäts-Check:</strong> Du verbrennst aktuell pures Geld und wertvolle Lebenszeit. Deine Pflanzen überleben primär, anstatt massiven Ertrag abzuwerfen. Dein absoluter Flaschenhals liegt bei <strong>${bottleneckName}</strong>. Es hat absolut keinen Sinn, über bessere LEDs oder Zusatzbooster nachzudenken, solange dieses fundamentale Problem deine Ernte gnadenlos im Keller einsperrt. Nutze deinen Verstand sinnvoll und hebe dieses Defizit an!`;
+        } else if (lowest <= 75) {
+            headBox.classList.add("tier-voodoo");
+            headBox.innerHTML = `
+                <h3 style="color:var(--warning)">🟡 Zone: Das unbeständige Mittelfeld</h3>
+                <div class="score-stars">${starsStr}</div>
+                <div class="score-percentage">Reales Ertragspotenzial gedeckelt auf: ${lowest}%</div>
+            `;
+            critiqueText.innerHTML = `<strong>Die typische Grower-Falle:</strong> Du fährst ein solides Setup und hast vermutlich schon gutes Geld investiert. Aber du stolperst über den klassischen Fehler: Einzelne Faktoren stehen bei 90%, aber <strong>${bottleneckName}</strong> bildet die kürzeste Daube bei ${lowest}% und deckelt das gesamte Fass. Du bist Lichtjahre vom genetischen Maximum entfernt. Bring diese eine Schwachstelle auf 75-80% hoch und du wirst eine Qualität sehen, die du kaum für möglich hältst.`;
         } else {
-            statusEl.innerText = "🏆 Absolute Profi-Symmetrie";
-            statusEl.style.color = "var(--primary)";
-            textEl.innerText = "Hut ab! Alle Dauben deines Fasses stehen auf absolutem Elite-Niveau. Du hast das Zusammenspiel der Faktoren perfekt verstanden und schöpfst das genetische Maximum ohne Verschwendung voll aus.";
-            voodooBox.style.display = "none";
+            headBox.classList.add("tier-master");
+            headBox.innerHTML = `
+                <h3 style="color:var(--primary)">🟢 Zone: Die Goldene Balance (Meister)</h3>
+                <div class="score-stars">${starsStr}</div>
+                <div class="score-percentage">Reales Ertragspotenzial bei stolzen: ${lowest}%</div>
+            `;
+            critiqueText.innerHTML = `<strong>Grandioses Verständnis:</strong> Du hast das Liebigsche Minimumgesetz perfekt verstanden und in die Tat umgesetzt. Alle Dauben deines Fasses stehen auf einem hervorragenden, absolut gleichmäßigen Niveau. Genau so erntet man das brutalste, harzreichste Cannabis im Homegrow. Dein System läuft rund, die Nährstoffaufnahme fließt optimal und die Energie verpufft nicht. Respekt!`;
         }
+
+        changeScreen('assessment');
     }
 
-    function resetApp() {
-        aktuellerSchritt = 0;
-        antworten = { licht: null, medium: null, wasser: null, ph: null, naehr: null, klima: null, genetik: null, training: null, hygiene: null };
-        for (let key in daubenIds) {
-            document.getElementById(daubenIds[key]).style.height = "15%";
-        }
-        document.getElementById("water-level").style.height = "0%";
-        document.getElementById("limit-line").style.display = "none";
-        document.getElementById("score-widget").style.display = "none";
-        document.getElementById("diag-status").innerText = "System bereit";
-        document.getElementById("diag-status").style.color = "#64748b";
-        document.getElementById("diag-text").innerText = "Konfrontiere dich mit den Fragen. Das Fass lügt nicht.";
-        document.getElementById("voodoo-box").style.display = "none";
-        renderStep();
+    function resetQuiz() {
+        currentIdx = 0;
+        scores = { licht: null, substrat: null, giessen: null, ph: null, duenger: null, klima: null, genetik: null, training: null, hygiene: null };
+        
+        document.querySelectorAll(".stave-wood").forEach(el => el.style.height = "20px");
+        document.getElementById("water-fill").style.height = "0px";
+        document.getElementById("red-line").style.display = "none";
+        
+        changeScreen('landing');
     }
-
-    renderStep();
 </script>
 
 </body>
